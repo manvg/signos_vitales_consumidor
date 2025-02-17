@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  consumir-alertas-app:
+    build: .
+    container_name: consumir-alertas-app
+    ports:
+      - "8082:8082"
+    networks:
+      - kafka_kafka-net 
+
+networks:
+  kafka_kafka-net:
+    external: true
