@@ -1,13 +1,19 @@
-version: '3.8'
-
 services:
-  consumir-alertas-app:
-    build: .
-    container_name: consumir-alertas-app
+  signos-vitales-consumidor:
+    image: manvg/ms-signos-vitales-consumidor:latest
+    container_name: signos-vitales-consumidor
     ports:
       - "8082:8082"
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: "172.31.82.234:9093"
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m" 
+        max-file: "3"
     networks:
-      - kafka_kafka-net 
+      - kafka_kafka-net
 
 networks:
   kafka_kafka-net:

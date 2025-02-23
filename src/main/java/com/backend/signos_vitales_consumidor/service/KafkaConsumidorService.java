@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
@@ -20,6 +21,9 @@ public class KafkaConsumidorService {
 
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
+
+    @Autowired
+    private RegistroHistoricoService registroHistoricoService;
 
     private final ObjectMapper objectMapper;
 
@@ -32,8 +36,7 @@ public class KafkaConsumidorService {
     public void consumirMensaje(String mensaje) {
         try {
             SignosVitales signos = objectMapper.readValue(mensaje, SignosVitales.class);
-            
-            //Validar si existen anomalías
+
             String observacion = generarObservacion(signos);
             if (observacion != null) {
                 AlertaMedica alerta = new AlertaMedica();
@@ -48,6 +51,9 @@ public class KafkaConsumidorService {
                 //Publicar en el tópico de alertas
                 kafkaTemplate.send(TOPIC_ALERTAS, objectMapper.writeValueAsString(alerta));
                 System.out.println("Alerta médica generada para " + signos.getNombrePaciente());
+
+            } else {
+                registroHistoricoService.enviarARegistroHistorico(signos);
             }
 
         } catch (JsonProcessingException e) {
