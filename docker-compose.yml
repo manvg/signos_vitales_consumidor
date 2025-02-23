@@ -1,11 +1,11 @@
 services:
   signos-vitales-consumidor:
-    image: manvg/ms-signos-vitales-consumidor:latest
+    image: ms-signos-vitales-consumidor
     container_name: signos-vitales-consumidor
     ports:
       - "8082:8082"
     environment:
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: "172.31.82.234:9093"
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: "172.31.82.234:9092"
     restart: always
     logging:
       driver: "json-file"
